@@ -1,13 +1,9 @@
 package pl.kwi.chrisblog;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
-@SpringBootApplication
-public class ChrisBlogApplication {
+@ApplicationPath("api")
+public class ChrisBlogApplication extends Application {
 
-    public static void main(String[] args) {
-		SpringApplication.run(ChrisBlogApplication.class, args);
-	}
-    
 }
