@@ -3,8 +3,7 @@ package pl.kwi.chrisblog.db.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,8 +31,9 @@ public class TagEntity {
     		name = "ARTICLE_TAG", 
     		joinColumns = @JoinColumn(name = "tag_id"), 
     		inverseJoinColumns = @JoinColumn(name = "article_id"))
-	@JsonIgnore
-    private Set<ArticleEntity> articles = new HashSet<ArticleEntity>();
+	
+	@JsonbTransient
+    private Set<ArticleEntity> articles = new HashSet<>();
     
     
 	public TagEntity() {

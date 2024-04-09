@@ -3,8 +3,7 @@ package pl.kwi.chrisblog.db.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,8 +30,9 @@ public class CategoryEntity {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-	@JsonIgnore
-    private Set<ArticleEntity> articles = new HashSet<ArticleEntity>();
+	
+	@JsonbTransient
+    private Set<ArticleEntity> articles = new HashSet<>();
     
     
 	public CategoryEntity() {

@@ -4,8 +4,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,12 +55,12 @@ public class ArticleEntity {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-	@JsonIgnore
+	@JsonbTransient
     private CategoryEntity category;
     
     @ManyToMany(mappedBy = "articles")
-	@JsonIgnore
-    private Set<TagEntity> tags = new HashSet<TagEntity>();
+	@JsonbTransient
+    private Set<TagEntity> tags = new HashSet<>();
    
     
 	public ArticleEntity() {
