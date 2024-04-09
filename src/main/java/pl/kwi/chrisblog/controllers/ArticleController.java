@@ -1,45 +1,45 @@
 package pl.kwi.chrisblog.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
 import pl.kwi.chrisblog.db.entities.ArticleEntity;
 import pl.kwi.chrisblog.dtos.ArticleRequest;
 import pl.kwi.chrisblog.dtos.ArticleResponse;
 import pl.kwi.chrisblog.services.ArticleService;
 
-@RestController
-@CrossOrigin("${fe.url}")
+@Path("v1/article")
 public class ArticleController {
 
-
     private ArticleService articleService;
-
     
-    @Autowired
+    @Inject
     public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
     }
 
-    @GetMapping("api/v1/article")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public ArticleResponse findArticles(
-        @RequestParam("categoryId") Long categoryId,
-        @RequestParam(value = "tagId", required = false) Long tagId,
-        @RequestParam("page") int page,
-        @RequestParam("sorting") String sorting,
-        @RequestParam(value = "searchText", required = false) String searchText 
+        @QueryParam("categoryId") Long categoryId,
+        @QueryParam(value = "tagId") Long tagId,
+        @QueryParam("page") int page,
+        @QueryParam("sorting") String sorting,
+        @QueryParam(value = "searchText") String searchText 
         ) {
 
         return articleService.findArticles(new ArticleRequest(categoryId, tagId, page, sorting, searchText));
 
     }
 
-    @GetMapping("api/v1/article/{id}")
-    public ArticleEntity findArticleById(@PathVariable Long id) {
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{id}")
+    public ArticleEntity findArticleById(@PathParam("id") Long id) {
         return articleService.findArticleById(id);
     }
     
