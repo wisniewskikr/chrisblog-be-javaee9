@@ -1,39 +1,35 @@
 package pl.kwi.chrisblog.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
 import pl.kwi.chrisblog.dtos.TagRequest;
 import pl.kwi.chrisblog.dtos.TagResponse;
 import pl.kwi.chrisblog.services.TagService;
 
-@RestController
-@CrossOrigin("${fe.url}")
+@Path("v1/tag")
 public class TagController {
 
-
     private TagService tagService;
-
     
-    @Autowired
+    @Inject
     public TagController(TagService tagService) {
         this.tagService = tagService;
     }
 
-
-    @GetMapping("api/v1/tag")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public TagResponse findTags(
-        @RequestParam("categoryId") Long categoryId,
-        @RequestParam(value = "tagId", required = false) Long tagId,
-        @RequestParam("page") int page,
-        @RequestParam("sorting") String sorting,
-        @RequestParam(value = "searchText", required = false) String searchText 
+        @QueryParam("categoryId") Long categoryId,
+        @QueryParam(value = "tagId") Long tagId,
+        @QueryParam("page") int page,
+        @QueryParam("sorting") String sorting,
+        @QueryParam(value = "searchText") String searchText 
     ) {
         return tagService.findTags(new TagRequest(categoryId, tagId, page, sorting, searchText));
     }
-    
     
 }
