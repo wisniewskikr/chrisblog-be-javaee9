@@ -1,39 +1,51 @@
 package pl.kwi.chrisblog.services;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import pl.kwi.chrisblog.db.entities.ArticleEntity;
 import pl.kwi.chrisblog.db.repositories.ArticleRepository;
 import pl.kwi.chrisblog.dtos.ArticleRequest;
 import pl.kwi.chrisblog.dtos.ArticleResponse;
+import pl.kwi.chrisblog.dtos.Page;
 import pl.kwi.chrisblog.enums.SortingEnum;
 
-@Service
+@Stateless
 public class ArticleService {
 
-    @Value(value = "${articles.on.page}")
-    private int articlesOnPage;
-
-	@Value(value = "${pagination.items.on.page}")
-    private int paginationItemsOnPage;
-
-    private ArticleRepository articleRepository;
-
+    private static final String PATH = "/application-default.properties";
+	private int articlesOnPage;
+    private int paginationItemsOnPage;  
+	
+	@PersistenceContext
+    private EntityManager em;
     
-    @Autowired
-    public ArticleService(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
+    @PostConstruct
+    public void init() {
+
+		Properties prop;
+
+        try {
+            InputStream inputStream  = ArticleService.class.getClassLoader().getResourceAsStream(PATH);
+            prop = new Properties();
+            prop.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+			return;
+        }
+
+		articlesOnPage = Integer.valueOf(prop.getProperty("articles.on.page"));
+		paginationItemsOnPage = Integer.valueOf(prop.getProperty("pagination.items.on.page"));
+
     }
 
 
@@ -56,24 +68,29 @@ public class ArticleService {
     }
 
 	public ArticleEntity findArticleById(Long id) {
-		return articleRepository.findById(id).orElseThrow(() -> new RuntimeException("No article with id: " + id));
+
+		return em
+            .createQuery("SELECT * FROM ArticleEntity a WHERE a.id = :id", ArticleEntity.class)
+			.setParameter("id", id)
+            .getSingleResult();
+
 	}
 
     private Page<ArticleEntity> getTagPage(ArticleRequest request) {
 		
-		Pageable pageable = PageRequest.of(request.page() - 1, articlesOnPage, handleSorting(request.sorting()));
-		return articleRepository.findByTagIdAsPage(request.tagId(), pageable);
+		Pageable pageable = PageRequest.of(request.getPage() - 1, articlesOnPage, handleSorting(request.getSorting()));
+		return articleRepository.findByTagIdAsPage(request.getTagId(), pageable);
 		
 	}
 
     private Page<ArticleEntity> getSearchPage(ArticleRequest request) {
 		
-		Pageable pageable = PageRequest.of(request.page() - 1, articlesOnPage, handleSorting(request.sorting()));
+		Pageable pageable = PageRequest.of(request.getPage() - 1, articlesOnPage, handleSorting(request.getSorting()));
 		Page<ArticleEntity> page = null;
-		if (request.categoryId() == 0) {
-			page = articleRepository.findBySearchTextAsPage(request.searchText().toLowerCase(), pageable);
+		if (request.getCategoryId() == 0) {
+			page = articleRepository.findBySearchTextAsPage(request.getSearchText().toLowerCase(), pageable);
 		} else {
-			page = articleRepository.findBySearchTextAndCategoryIdAsPage(request.searchText().toLowerCase(), request.categoryId(), pageable);
+			page = articleRepository.findBySearchTextAndCategoryIdAsPage(request.getSearchText().toLowerCase(), request.getCategoryId(), pageable);
 		}		
 		return page;
 		
@@ -81,15 +98,15 @@ public class ArticleService {
 
     private Page<ArticleEntity> getHomeCategoryPage(ArticleRequest request) {
 		
-		Pageable pageable = PageRequest.of(request.page() - 1, articlesOnPage, handleSorting(request.sorting()));
+		Pageable pageable = PageRequest.of(request.getPage() - 1, articlesOnPage, handleSorting(request.getSorting()));
 		return articleRepository.findAll(pageable);
 		
 	}
 
     private Page<ArticleEntity> getOtherCategoriesPage(ArticleRequest request) {
 		
-		Pageable pageable = PageRequest.of(request.page() - 1, articlesOnPage, handleSorting(request.sorting()));
-		return articleRepository.findByCategoryIdAsPage(request.categoryId(), pageable);
+		Pageable pageable = PageRequest.of(request.getPage() - 1, articlesOnPage, handleSorting(request.getSorting()));
+		return articleRepository.findByCategoryIdAsPage(request.getCategoryId(), pageable);
 		
 	}
 
@@ -99,14 +116,14 @@ public class ArticleService {
         boolean disablePrevious;
 	    boolean disableNext;
 		
-        int first = getFirst(request.page(), page.getTotalPages());
-		int last = getLast(request.page(), page.getTotalPages());
+        int first = getFirst(request.getPage(), page.getTotalPages());
+		int last = getLast(request.getPage(), page.getTotalPages());
 		for (int i = first; i <= last; i++) {
 			pages.add(i);
 		}
 
-        disablePrevious = (request.page() == 1);
-        disableNext = (request.page() == page.getTotalPages() || pages.isEmpty());
+        disablePrevious = (request.getPage() == 1);
+        disableNext = (request.getPage() == page.getTotalPages() || pages.isEmpty());
 
         return new ArticleResponse(pages, disablePrevious, disableNext, page.getContent());        		
 		
@@ -115,15 +132,15 @@ public class ArticleService {
     // ***** HELP METHODS ***** //
 
     private boolean isTag(ArticleRequest request) {		
-		return (request.tagId() != null);		
+		return (request.getTagId() != null);		
 	}
 
     private boolean isSearch(ArticleRequest request) {		
-		return (StringUtils.isNotBlank(request.searchText()));		
+		return (StringUtils.isNotBlank(request.getSearchText()));		
 	}
 	
 	private boolean isHomeCategory(ArticleRequest request) {		
-		return (request.categoryId() == 0);		
+		return (request.getCategoryId() == 0);		
 	}    
 
     private Sort handleSorting(String selectedSorting) {
