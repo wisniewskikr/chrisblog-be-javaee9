@@ -143,25 +143,25 @@ public class ArticleService {
 		return (request.getCategoryId() == 0);		
 	}    
 
-    private Sort handleSorting(String selectedSorting) {
+    private String handleSorting(String selectedSorting) {
 		
 		SortingEnum sortingEnum = SortingEnum.getEnum(selectedSorting);
 		
 		switch (sortingEnum) {
 		case TITLE_INCREASING:
-			return Sort.by(Sort.Direction.ASC, "title");
+			return "ORDER BY a.title ASC";
 		case TITLE_DECREASING:
-			return Sort.by(Sort.Direction.DESC, "title");	
+			return "ORDER BY a.title DESC";
 		case DATE_INCREASING:
-			return Sort.by(Sort.Direction.ASC, "date");
+			return "ORDER BY a.date ASC";
 		case DATE_DECREASING:
-			return Sort.by(Sort.Direction.DESC, "date");
+			return "ORDER BY a.date DESC";
 		case AUTHOR_INCREASING:
-			return Sort.by(Sort.Direction.ASC, "author");
+			return "ORDER BY a.author ASC";
 		case AUTHOR_DECREASING:
-			return Sort.by(Sort.Direction.DESC, "author");
+			return "ORDER BY a.author DESC";
 		default:
-			return Sort.by(Sort.Direction.DESC, "title");
+			return "ORDER BY a.title DESC";
 		}
 		
 	}
