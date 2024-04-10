@@ -1,25 +1,26 @@
 package pl.kwi.chrisblog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import pl.kwi.chrisblog.db.repositories.CategoryRepository;
+import java.util.List;
+
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import pl.kwi.chrisblog.db.entities.CategoryEntity;
 import pl.kwi.chrisblog.dtos.CategoryResponse;
 
-@Service
+@Stateless
 public class CategoryService {
-
   
-    private CategoryRepository categoryRepository;
-
-    
-    @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    @PersistenceContext
+    private EntityManager em;
 
 	public CategoryResponse findCategories() {
-		return new CategoryResponse(categoryRepository.findAll());
+
+        List<CategoryEntity> categories = em
+            .createQuery("SELECT c FROM CategoryEntity", CategoryEntity.class)
+            .getResultList();
+		return new CategoryResponse(categories);
+
 	}
-    
     
 }
