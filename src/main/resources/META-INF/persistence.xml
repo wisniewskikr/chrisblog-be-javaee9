@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence>
+	<persistence-unit name="tutorial">
+		<properties>
+			<property name="jakarta.persistence.schema-generation.database.action" value="create" />
+			<property name="jakarta.persistence.sql-load-script-source"
+                      value="META-INF/initial-data.sql" />
+			
+			<!-- Don't worry about these, they are there to make the tutorial easier to follow -->
+			<property name="hibernate.show_sql" value="true"/>
+			<property name="hibernate.format_sql" value="true"/>
+			<property name="hibernate.use_sql_comments" value="true"/>
+		</properties>
+	</persistence-unit>
+</persistence>
