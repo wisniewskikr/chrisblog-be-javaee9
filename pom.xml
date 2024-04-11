@@ -28,7 +28,7 @@
     </dependencies>
 
     <build>
-        <finalName>rest</finalName>
+        <finalName>api</finalName>
     </build>
 
     <properties>
