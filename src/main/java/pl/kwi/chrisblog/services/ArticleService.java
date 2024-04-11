@@ -20,7 +20,7 @@ import pl.kwi.chrisblog.enums.SortingEnum;
 @Stateless
 public class ArticleService {
 
-    private static final String PATH = "/application-default.properties";
+    private static final String PATH = "/application.properties";
 	private int articlesOnPage;
     private int paginationItemsOnPage;  
 	
