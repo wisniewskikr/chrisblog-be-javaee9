@@ -51,7 +51,7 @@ public class ArticleService {
 
     public ArticleResponse findArticles(ArticleRequest request) {
         
-        Page<ArticleEntity> page = null;
+        Page<List<ArticleEntity>> page = null;
         
         if (isTag(request)) {
             page = getTagPage(request);
@@ -76,10 +76,29 @@ public class ArticleService {
 
 	}
 
-    private Page<ArticleEntity> getTagPage(ArticleRequest request) {
-		
-		Pageable pageable = PageRequest.of(request.getPage() - 1, articlesOnPage, handleSorting(request.getSorting()));
-		return articleRepository.findByTagIdAsPage(request.getTagId(), pageable);
+    private Page<List<ArticleEntity>> getTagPage(ArticleRequest request) {
+
+		int page = request.getPage() - 1;
+		int firstResult = page * articlesOnPage;
+		int maxResults = articlesOnPage;
+
+		int totalResults = em
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a JOIN a.tags t WHERE t.id = :tagId GROUP BY a.id " + handleSorting(request.getSorting()), 
+			Integer.class)
+			.setParameter("tagId", request.getTagId())
+            .getSingleResult();
+
+		int totalPages = (totalResults + articlesOnPage - 1) / articlesOnPage;
+
+		List<ArticleEntity> articles = em
+            .createQuery("SELECT a FROM ArticleEntity a JOIN a.tags t WHERE t.id = :tagId GROUP BY a.id " + handleSorting(request.getSorting()), 
+			ArticleEntity.class)
+			.setParameter("tagId", request.getTagId())
+			.setFirstResult(firstResult)
+			.setMaxResults(maxResults)
+            .getResultList();
+
+			return new Page<>(articles, totalPages);
 		
 	}
 
