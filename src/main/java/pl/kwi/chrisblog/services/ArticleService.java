@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +12,6 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import pl.kwi.chrisblog.db.entities.ArticleEntity;
-import pl.kwi.chrisblog.db.repositories.ArticleRepository;
 import pl.kwi.chrisblog.dtos.ArticleRequest;
 import pl.kwi.chrisblog.dtos.ArticleResponse;
 import pl.kwi.chrisblog.dtos.Page;
@@ -216,7 +214,7 @@ public class ArticleService {
 		
 	}
 
-    protected ArticleResponse createArticleResponseWithPagination(ArticleRequest request, Page<ArticleEntity> page) {
+    protected ArticleResponse createArticleResponseWithPagination(ArticleRequest request, Page<List<ArticleEntity>> page) {
 		
 		List<Integer> pages = new ArrayList<>();
         boolean disablePrevious;
