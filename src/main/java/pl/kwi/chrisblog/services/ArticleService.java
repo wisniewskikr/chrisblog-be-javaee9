@@ -166,10 +166,27 @@ public class ArticleService {
 
 	}
 
-    private Page<ArticleEntity> getHomeCategoryPage(ArticleRequest request) {
+    private Page<List<ArticleEntity>> getHomeCategoryPage(ArticleRequest request) {
 		
-		Pageable pageable = PageRequest.of(request.getPage() - 1, articlesOnPage, handleSorting(request.getSorting()));
-		return articleRepository.findAll(pageable);
+		int page = request.getPage() - 1;
+		int firstResult = page * articlesOnPage;
+		int maxResults = articlesOnPage;
+
+		int totalResults = em
+            .createQuery("SELECT a FROM ArticleEntity a " + handleSorting(request.getSorting()), 
+			Integer.class)
+            .getSingleResult();
+
+		int totalPages = (totalResults + articlesOnPage - 1) / articlesOnPage;
+
+		List<ArticleEntity> articles = em
+            .createQuery("SELECT a FROM ArticleEntity a " + handleSorting(request.getSorting()), 
+			ArticleEntity.class)
+			.setFirstResult(firstResult)
+			.setMaxResults(maxResults)
+            .getResultList();
+
+			return new Page<>(articles, totalPages);
 		
 	}
 
