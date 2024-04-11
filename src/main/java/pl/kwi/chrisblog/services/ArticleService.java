@@ -102,17 +102,68 @@ public class ArticleService {
 		
 	}
 
-    private Page<ArticleEntity> getSearchPage(ArticleRequest request) {
+    private Page<List<ArticleEntity>> getSearchPage(ArticleRequest request) {
 		
-		Pageable pageable = PageRequest.of(request.getPage() - 1, articlesOnPage, handleSorting(request.getSorting()));
-		Page<ArticleEntity> page = null;
 		if (request.getCategoryId() == 0) {
-			page = articleRepository.findBySearchTextAsPage(request.getSearchText().toLowerCase(), pageable);
+			return getSearchPageWithoutCategory(request);
 		} else {
-			page = articleRepository.findBySearchTextAndCategoryIdAsPage(request.getSearchText().toLowerCase(), request.getCategoryId(), pageable);
+			return getSearchPageWithCategory(request);
 		}		
-		return page;
 		
+	}
+
+	private Page<List<ArticleEntity>> getSearchPageWithoutCategory(ArticleRequest request) {
+
+		int page = request.getPage() - 1;
+		int firstResult = page * articlesOnPage;
+		int maxResults = articlesOnPage;
+
+		int totalResults = em
+            .createQuery("SELECT a FROM ArticleEntity a WHERE LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText% " + handleSorting(request.getSorting()), 
+			Integer.class)
+			.setParameter("searchText", request.getSearchText().toLowerCase())
+            .getSingleResult();
+
+		int totalPages = (totalResults + articlesOnPage - 1) / articlesOnPage;
+
+		List<ArticleEntity> articles = em
+            .createQuery("SELECT a FROM ArticleEntity a WHERE LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText% " + handleSorting(request.getSorting()), 
+			ArticleEntity.class)
+			.setParameter("searchText", request.getSearchText().toLowerCase())
+			.setFirstResult(firstResult)
+			.setMaxResults(maxResults)
+            .getResultList();
+
+			return new Page<>(articles, totalPages);
+
+	}
+
+	private Page<List<ArticleEntity>> getSearchPageWithCategory(ArticleRequest request) {
+
+		int page = request.getPage() - 1;
+		int firstResult = page * articlesOnPage;
+		int maxResults = articlesOnPage;
+
+		int totalResults = em
+            .createQuery("SELECT a FROM ArticleEntity a WHERE (LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText%) AND a.category.id = :categoryId " + handleSorting(request.getSorting()), 
+			Integer.class)
+			.setParameter("searchText", request.getSearchText().toLowerCase())
+			.setParameter("categoryId", request.getCategoryId())
+            .getSingleResult();
+
+		int totalPages = (totalResults + articlesOnPage - 1) / articlesOnPage;
+
+		List<ArticleEntity> articles = em
+            .createQuery("SELECT a FROM ArticleEntity a WHERE (LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText%) AND a.category.id = :categoryId " + handleSorting(request.getSorting()), 
+			ArticleEntity.class)
+			.setParameter("searchText", request.getSearchText().toLowerCase())
+			.setParameter("categoryId", request.getCategoryId())
+			.setFirstResult(firstResult)
+			.setMaxResults(maxResults)
+            .getResultList();
+
+			return new Page<>(articles, totalPages);
+
 	}
 
     private Page<ArticleEntity> getHomeCategoryPage(ArticleRequest request) {
