@@ -17,7 +17,7 @@ public class CategoryService {
 	public CategoryResponse findCategories() {
 
         List<CategoryEntity> categories = em
-            .createQuery("SELECT * FROM CategoryEntity", CategoryEntity.class)
+            .createQuery("SELECT c FROM CategoryEntity c", CategoryEntity.class)
             .getResultList();
 		return new CategoryResponse(categories);
 
