@@ -117,7 +117,7 @@ public class ArticleService {
 		int maxResults = articlesOnPage;
 
 		int totalResults = em
-            .createQuery("SELECT a FROM ArticleEntity a WHERE LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText% " + handleSorting(request.getSorting()), 
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a WHERE LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText% " + handleSorting(request.getSorting()), 
 			Integer.class)
 			.setParameter("searchText", request.getSearchText().toLowerCase())
             .getSingleResult();
@@ -143,7 +143,7 @@ public class ArticleService {
 		int maxResults = articlesOnPage;
 
 		int totalResults = em
-            .createQuery("SELECT a FROM ArticleEntity a WHERE (LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText%) AND a.category.id = :categoryId " + handleSorting(request.getSorting()), 
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a WHERE (LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText%) AND a.category.id = :categoryId " + handleSorting(request.getSorting()), 
 			Integer.class)
 			.setParameter("searchText", request.getSearchText().toLowerCase())
 			.setParameter("categoryId", request.getCategoryId())
@@ -171,7 +171,7 @@ public class ArticleService {
 		int maxResults = articlesOnPage;
 
 		int totalResults = em
-            .createQuery("SELECT a FROM ArticleEntity a " + handleSorting(request.getSorting()), 
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a " + handleSorting(request.getSorting()), 
 			Integer.class)
             .getSingleResult();
 
@@ -195,7 +195,7 @@ public class ArticleService {
 		int maxResults = articlesOnPage;
 
 		int totalResults = em
-            .createQuery("SELECT a FROM ArticleEntity a WHERE a.category.id = :categoryId " + handleSorting(request.getSorting()), 
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a WHERE a.category.id = :categoryId " + handleSorting(request.getSorting()), 
 			Integer.class)
 			.setParameter("categoryId", request.getCategoryId())
             .getSingleResult();
