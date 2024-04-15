@@ -170,12 +170,12 @@ public class ArticleService {
 		int firstResult = page * articlesOnPage;
 		int maxResults = articlesOnPage;
 
-		int totalResults = em
-            .createQuery("SELECT COUNT(a) FROM ArticleEntity a " + handleSorting(request.getSorting()), 
-			Integer.class)
+		long totalResults = em
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a", 
+			Long.class)
             .getSingleResult();
 
-		int totalPages = (totalResults + articlesOnPage - 1) / articlesOnPage;
+		int totalPages = (Math.toIntExact(totalResults) + articlesOnPage - 1) / articlesOnPage;
 
 		List<ArticleEntity> articles = em
             .createQuery("SELECT a FROM ArticleEntity a " + handleSorting(request.getSorting()), 
