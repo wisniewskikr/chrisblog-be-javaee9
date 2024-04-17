@@ -84,3 +84,16 @@ insert into ARTICLE_TAG (tag_id, article_id) values (4,3);
 
 insert into ARTICLE (id, page_description, title, description, date, author, category_id, template, url) values (4, 'The article presents a relation from a trip to Ning Binh in Vietnam.', 'Ninh Binh, Vietnam, 12.2020', 'The article presents a relation from a trip to Ning Binh in Vietnam in December 2020.', '2021-03-22', 'Chris', 4, 'LINK_ALBUM', 'https://photos.app.goo.gl/USQztcfzG4kkE2vg7');
 insert into ARTICLE_TAG (tag_id, article_id) values (6,4);
+
+insert into ARTICLE (id, page_description, title, description, date, author, category_id, template, url) values (5, 'The article with Hello World example of Spring Boot API', 'Hello World - Spring Boot API', 'This article will show you how to create first simple Java application in Spring Boot REST API technology. It contains two examples: one "Hello World" with GET method and one "Hello World" with POST method.', '2021-03-31', 'Chris', 1, 'LINK_GITHUB', 'https://github.com/wisniewskikr/chrisblog-it-java-springboot/tree/main/arichitectures/api/rest/springboot-helloworld-port-uuid-single');
+insert into ARTICLE_TAG (tag_id, article_id) values (7,5);
+
+insert into ARTICLE (id, page_description, title, description, date, author, category_id, template, url) values (6, 'The article presents TED lecture about making decisions like computer. Presenter is Tom Griffiths.', 'TED - 3 ways to make better decisions - by thinking like a computer; Tom Griffiths', 'If you ever struggle to make decisions, here`s a talk for you. Cognitive scientist Tom Griffiths shows how we can apply the logic of computers to untangle tricky human problems, sharing three practical strategies for making better decisions - on everything from finding a home to choosing which restaurant to go to tonight.', '2021-04-06', 'Chris', 2, 'LINK_YOUTUBE', 'https://embed.ted.com/talks/tom_griffiths_3_ways_to_make_better_decisions_by_thinking_like_a_computer');
+insert into ARTICLE_TAG (tag_id, article_id) values (3,6);
+insert into ARTICLE_TAG (tag_id, article_id) values (4,6);
+
+insert into ARTICLE (id, page_description, title, description, date, author, category_id, template, content) values (7, 'The article presents book "We are the weather" by Jonathan Safran Foer.', 'We are the weather; Jonathan Safran Foer', 'In We Are the Weather, Jonathan Safran Foer explores the central global dilemma of our time in a surprising, deeply personal, and urgent new way. Some people reject the fact, overwhelmingly supported by scientists, that our planet is warming because of human activity.', '2021-04-08', 'Chris', 3, 'CONTENT', 'This book says about pollution problem, strategies to solve it and moral dilemas');
+insert into ARTICLE_TAG (tag_id, article_id) values (3,7);
+
+insert into ARTICLE (id, page_description, title, description, date, author, category_id, template, url) values (8, 'The article presents a relation from a 4 days motorbike trip in the district Ha Giang in Vietnam.', 'Ha Giang, Vietnam, 12.2020', 'The article presents a relation from a 4 days motorbike trip in the district Ha Giang in Vietnam in December 2020.', '2021-04-14', 'Chris', 4, 'LINK_ALBUM', 'https://photos.app.goo.gl/K9sfbd4jkJEQvzF29');
+insert into ARTICLE_TAG (tag_id, article_id) values (6,8);
