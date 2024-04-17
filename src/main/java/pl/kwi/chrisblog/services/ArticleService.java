@@ -117,17 +117,17 @@ public class ArticleService {
 		int maxResults = articlesOnPage;
 
 		long totalResults = em
-            .createQuery("SELECT COUNT(a) FROM ArticleEntity a WHERE LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText% ", 
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a WHERE LOWER(a.title) LIKE :searchText OR LOWER(a.description) LIKE :searchText ", 
 			Long.class)
-			.setParameter("searchText", request.getSearchText().toLowerCase())
+			.setParameter("searchText", "%" + request.getSearchText().toLowerCase() + "%")
             .getSingleResult();
 
 		int totalPages = (Math.toIntExact(totalResults) + articlesOnPage - 1) / articlesOnPage;
 
 		List<ArticleEntity> articles = em
-            .createQuery("SELECT a FROM ArticleEntity a WHERE LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText% " + handleSorting(request.getSorting()), 
+            .createQuery("SELECT a FROM ArticleEntity a WHERE LOWER(a.title) LIKE :searchText OR LOWER(a.description) LIKE :searchText " + handleSorting(request.getSorting()), 
 			ArticleEntity.class)
-			.setParameter("searchText", request.getSearchText().toLowerCase())
+			.setParameter("searchText", "%" + request.getSearchText().toLowerCase() + "%")
 			.setFirstResult(firstResult)
 			.setMaxResults(maxResults)
             .getResultList();
@@ -143,18 +143,18 @@ public class ArticleService {
 		int maxResults = articlesOnPage;
 
 		long totalResults = em
-            .createQuery("SELECT COUNT(a) FROM ArticleEntity a WHERE (LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText%) AND a.category.id = :categoryId ", 
+            .createQuery("SELECT COUNT(a) FROM ArticleEntity a WHERE (LOWER(a.title) LIKE :searchText OR LOWER(a.description) LIKE :searchText) AND a.category.id = :categoryId ", 
 			Long.class)
-			.setParameter("searchText", request.getSearchText().toLowerCase())
+			.setParameter("searchText", "%" + request.getSearchText().toLowerCase() + "%")
 			.setParameter("categoryId", request.getCategoryId())
             .getSingleResult();
 
 		int totalPages = (Math.toIntExact(totalResults) + articlesOnPage - 1) / articlesOnPage;
 
 		List<ArticleEntity> articles = em
-            .createQuery("SELECT a FROM ArticleEntity a WHERE (LOWER(a.title) LIKE %:searchText% OR LOWER(a.description) LIKE %:searchText%) AND a.category.id = :categoryId " + handleSorting(request.getSorting()), 
+            .createQuery("SELECT a FROM ArticleEntity a WHERE (LOWER(a.title) LIKE :searchText OR LOWER(a.description) LIKE :searchText) AND a.category.id = :categoryId " + handleSorting(request.getSorting()), 
 			ArticleEntity.class)
-			.setParameter("searchText", request.getSearchText().toLowerCase())
+			.setParameter("searchText", "%" + request.getSearchText().toLowerCase() + "%")
 			.setParameter("categoryId", request.getCategoryId())
 			.setFirstResult(firstResult)
 			.setMaxResults(maxResults)
