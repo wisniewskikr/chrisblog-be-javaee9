@@ -68,7 +68,7 @@ public class ArticleService {
 	public ArticleEntity findArticleById(Long id) {
 
 		return em
-            .createQuery("SELECT * FROM ArticleEntity a WHERE a.id = :id", ArticleEntity.class)
+            .createQuery("SELECT a FROM ArticleEntity a WHERE a.id = :id", ArticleEntity.class)
 			.setParameter("id", id)
             .getSingleResult();
 
